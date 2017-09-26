@@ -20,7 +20,7 @@ public class OrderController {
     public OrderController() {
         orders = new ArrayList<>();
         orders.add(new Order(1, 1 ,21.99, "This is Nick's order" , new Date()));
-        orders.add(new Order(2, 2 ,0.99, "This is Mark's order" , new Date()));
+        orders.add(new Order(2, 3 ,0.99, "This is John's order" , new Date()));
         orders.add(new Order(3, 3 ,5.00, "This is John's order" , new Date()));
         orders.add(new Order(4, 4 ,100.00, "This is Bill's order" , new Date()));
         orders.add(new Order(5, 5 ,88.11, "This is Steve's order" , new Date()));
