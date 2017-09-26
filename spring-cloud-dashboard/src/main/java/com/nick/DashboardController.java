@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -18,7 +20,6 @@ import java.util.List;
  */
 @RestController
 public class DashboardController {
-
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder){
         return builder.build();
@@ -27,24 +28,39 @@ public class DashboardController {
     @Autowired
     private RestTemplate restTemplate;
 
+    private UserDetailsBuilder userDetailsBuilder;
+    public DashboardController() {
+        this.userDetailsBuilder = new UserDetailsBuilder();
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/show")
-    public List<User> showAll() {
+    public List<UserDetail> showAll() {
         User[] userArray = restTemplate.getForObject("http://172.16.89.94:9990/users", User[].class);
         List<User> users = Arrays.asList(userArray);
         Order[] orderArray = restTemplate.getForObject("http://172.16.89.94:9995/orders", Order[].class);
         List<Order> orders = Arrays.asList(orderArray);
-        return users;
+        List<UserDetail> userDetailList = new ArrayList<>();
+        users.forEach(user -> {
+            List<Order> userOrders = orders.stream().filter(order
+                    -> order.getUserId() == user.getUserId()).collect(Collectors.toList());
+            UserDetail userDetail = userDetailsBuilder.build(user, userOrders);
+            userDetailList.add(userDetail);
+        });
+
+        return userDetailList;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/show/{userId}")
-    public User show(@PathVariable int userId) {
+    public UserDetail show(@PathVariable int userId) {
         String userRequestUri = String.format("http://172.16.89.94:9990/users/%d", userId);
 
         User user = restTemplate.getForObject(userRequestUri, User.class);
 
-        String orderRequestUri = String.format("http://172.16.89.94:9995/orders/%d", userId);
+        String orderRequestUri = String.format("http://172.16.89.94:9995/getordersbyuserid/%d", userId);
 
-        Order order = restTemplate.getForObject(orderRequestUri, Order.class);
-        return user;
+        Order[] orderArray = restTemplate.getForObject(orderRequestUri, Order[].class);
+        List<Order> orders = Arrays.asList(orderArray);
+        UserDetail userDetail = userDetailsBuilder.build(user, orders);
+        return userDetail;
     }
 }

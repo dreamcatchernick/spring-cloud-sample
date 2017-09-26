@@ -11,7 +11,7 @@ public class Order {
     private double totalAmount;
     private String orderDescription;
     private Date orderDate;
-
+    public Order(){}
     public Order(int orderId, int userId, double totalAmount, String orderDescription, Date orderDate) {
         this.orderId = orderId;
         this.userId = userId;
