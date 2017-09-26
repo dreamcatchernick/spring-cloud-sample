@@ -35,9 +35,9 @@ public class DashboardController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/show")
     public List<UserDetail> showAll() {
-        User[] userArray = restTemplate.getForObject("http://172.16.89.94:9990/users", User[].class);
+        User[] userArray = restTemplate.getForObject("http://localhost:9990/users", User[].class);
         List<User> users = Arrays.asList(userArray);
-        Order[] orderArray = restTemplate.getForObject("http://172.16.89.94:9995/orders", Order[].class);
+        Order[] orderArray = restTemplate.getForObject("http://localhost:9995/orders", Order[].class);
         List<Order> orders = Arrays.asList(orderArray);
         List<UserDetail> userDetailList = new ArrayList<>();
         users.forEach(user -> {
@@ -52,11 +52,11 @@ public class DashboardController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/show/{userId}")
     public UserDetail show(@PathVariable int userId) {
-        String userRequestUri = String.format("http://172.16.89.94:9990/users/%d", userId);
+        String userRequestUri = String.format("http://localhost:9990/users/%d", userId);
 
         User user = restTemplate.getForObject(userRequestUri, User.class);
 
-        String orderRequestUri = String.format("http://172.16.89.94:9995/getordersbyuserid/%d", userId);
+        String orderRequestUri = String.format("http://localhost:9995/getordersbyuserid/%d", userId);
 
         Order[] orderArray = restTemplate.getForObject(orderRequestUri, Order[].class);
         List<Order> orders = Arrays.asList(orderArray);
