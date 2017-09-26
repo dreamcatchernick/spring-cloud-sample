@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by dreamcatchernick on 25/09/2017.
@@ -23,6 +24,8 @@ public class OrderController {
         orders.add(new Order(3, 3 ,5.00, "This is John's order" , new Date()));
         orders.add(new Order(4, 4 ,100.00, "This is Bill's order" , new Date()));
         orders.add(new Order(5, 5 ,88.11, "This is Steve's order" , new Date()));
+        orders.add(new Order(6, 1 ,77.96, "This is Nick's order" , new Date()));
+        orders.add(new Order(7, 1 ,9.20, "This is Nick's order" , new Date()));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/orders")
@@ -30,8 +33,8 @@ public class OrderController {
         return orders;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/orders/{id}")
-    public Order getOrder(@PathVariable int id) {
-        return orders.stream().filter(o -> o.getUserId()==id).findFirst().get();
+    @RequestMapping(method = RequestMethod.GET, value = "/getordersbyuserid/{userId}")
+    public List<Order> getOrder(@PathVariable int userId) {
+        return orders.stream().filter(o -> o.getUserId() == userId).collect(Collectors.toList());
     }
 }
